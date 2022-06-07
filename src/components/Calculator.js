@@ -133,7 +133,7 @@ const Calculator = () => {
                 </TableRow>
                 <TableRow>
                   <TableCell>Gain %</TableCell>
-                  <TableCell>{Number((newBalance/value).toString().match(/^\d+(?:\.\d{0,2})?/))*100}</TableCell>
+                  <TableCell>{Number(((newBalance/value)*100).toString().match(/^\d+(?:\.\d{0,2})?/))}</TableCell>
                 </TableRow>
               </TableBody>
             </Table>
