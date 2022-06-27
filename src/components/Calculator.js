@@ -30,7 +30,7 @@ const Calculator = () => {
   }, [value, lotSizeDivider]);
 
   useEffect(() => {
-    if (value != "" && lotSizeValue != "" && newBalance != "") {
+    if (value !== "" && lotSizeValue !== "" && newBalance !== "") {
       setHasValues(true);
     } else {
       setHasValues(false);
@@ -60,7 +60,7 @@ const Calculator = () => {
   const getLocalStorageData = () => {
     const history = localStorage.getItem("history");
 
-    if (history != null) {
+    if (history !== null) {
       const a = JSON.parse(history);
 
       setLocalHistory(a);
@@ -209,7 +209,7 @@ const Calculator = () => {
             fullWidth
           />
         </Stack>
-        <Stack>
+        <Stack direction="column">
           <Button
             variant="contained"
             onClick={saveToLocalStorage}
@@ -217,6 +217,11 @@ const Calculator = () => {
           >
             Save history
           </Button>
+          {!hasValues && (
+            <Typography variant="caption" color="error">
+              Input all values
+            </Typography>
+          )}
         </Stack>
         <Stack>
           <Stack>
@@ -310,6 +315,7 @@ const Calculator = () => {
                             size="small"
                             variant="contained"
                             color="secondary"
+                            sx={{fontSize: '.5rem', padding: '2px'}}
                           >
                             Load Data
                           </Button>
