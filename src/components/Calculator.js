@@ -20,6 +20,7 @@ const Calculator = () => {
   const [newBalance, setNewBalance] = useState("");
   const [lotSizeDivider, setLotSizeDivder] = useState(830);
   const [localHistory, setLocalHistory] = useState([]);
+  const [hasValues, setHasValues] = useState(false);
 
   useEffect(() => {
     const finalValue = Number(
@@ -27,6 +28,14 @@ const Calculator = () => {
     );
     setLotSizeValue(finalValue);
   }, [value, lotSizeDivider]);
+
+  useEffect(() => {
+    if (value != "" && lotSizeValue != "" && newBalance != "") {
+      setHasValues(true);
+    } else {
+      setHasValues(false);
+    }
+  }, [value, lotSizeValue, newBalance]);
 
   useEffect(() => {}, [lotSizeDivider]);
 
@@ -176,7 +185,7 @@ const Calculator = () => {
         margin: "10px",
       }}
     >
-      <Stack direction="column" spacing={3}>
+      <Stack direction="column" spacing={3} m={2}>
         <Stack alignItems="center">
           <Typography variant="h4">ASJ CALCULATOR</Typography>
         </Stack>
@@ -201,11 +210,14 @@ const Calculator = () => {
           />
         </Stack>
         <Stack>
-          <Button variant="contained" onClick={saveToLocalStorage}>
-            Save to local storage
+          <Button
+            variant="contained"
+            onClick={saveToLocalStorage}
+            disabled={!hasValues}
+          >
+            Save history
           </Button>
         </Stack>
-
         <Stack>
           <Stack>
             <Typography variant="h6">ACTUAL</Typography>
@@ -268,45 +280,49 @@ const Calculator = () => {
             </Table>
           </TableContainer>
         </Stack>
-      </Stack>
-      <Stack mt={2}>
         <Stack>
-          <Typography variant="h5">History</Typography>
+          <Stack>
+            <Typography variant="h5">History</Typography>
+          </Stack>
+          <Stack>
+            <TableContainer component={Paper} sx={{ padding: 0 }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Balance</TableCell>
+                    <TableCell>New Balance</TableCell>
+                    <TableCell>Lot Size</TableCell>
+                    <TableCell>Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {localHistory.length > 0 &&
+                    localHistory.map((item, index) => (
+                      <TableRow direction="row" spacing={2} key={index}>
+                        <TableCell>{convertDate(item.date)}</TableCell>
+                        <TableCell>{item.balance}</TableCell>
+                        <TableCell>{item.newBalance}</TableCell>
+                        <TableCell>{item.lotSize}</TableCell>
+                        <TableCell>
+                          <Button
+                            onClick={() => loadData(item)}
+                            size="small"
+                            variant="contained"
+                            color="secondary"
+                          >
+                            Load Data
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Stack>
         </Stack>
         <Stack>
-          <TableContainer component={Paper} sx={{ padding: 0 }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Balance</TableCell>
-                  <TableCell>New Balance</TableCell>
-                  <TableCell>Lot Size</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {localHistory.length > 0 &&
-                  localHistory.map((item, index) => (
-                    <TableRow direction="row" spacing={2} key={index}>
-                      <TableCell>{convertDate(item.date)}</TableCell>
-                      <TableCell>{item.balance}</TableCell>
-                      <TableCell>{item.newBalance}</TableCell>
-                      <TableCell>{item.lotSize}</TableCell>
-                      <TableCell>
-                        <Button
-                          onClick={() => loadData(item)}
-                          size="small"
-                          variant="contained"
-                          color="secondary"
-                        >
-                          Load Data
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Typography>© Karl Kangleon</Typography>
         </Stack>
       </Stack>
     </Paper>
