@@ -1,55 +1,91 @@
-import React, { useEffect, useState } from 'react';
-import { Stack, Typography, TextField, Paper, Table, TableContainer, TableBody, TableCell, TableRow, TableHead } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import {
+  Stack,
+  Typography,
+  TextField,
+  Paper,
+  Table,
+  TableContainer,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableHead,
+  Button,
+} from "@mui/material";
 
 const Calculator = () => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   const [lotSizeValue, setLotSizeValue] = useState(0);
   const [commissionValue, setCommissionValue] = useState(0);
-  const [newBalance, setNewBalance] = useState('');
+  const [newBalance, setNewBalance] = useState("");
+  const [lotSizeDivider, setLotSizeDivder] = useState(830);
+  const [localHistory, setLocalHistory] = useState([]);
 
   useEffect(() => {
-    const finalValue = Number((value/830).toString().match(/^\d+(?:\.\d{0,2})?/));
+    const finalValue = Number(
+      (value / lotSizeDivider).toString().match(/^\d+(?:\.\d{0,2})?/)
+    );
     setLotSizeValue(finalValue);
-  },[value])
+  }, [value, lotSizeDivider]);
+
+  useEffect(() => {}, [lotSizeDivider]);
 
   useEffect(() => {
-    setCommissionValue(lotSizeValue*30);
-  },[lotSizeValue])
-  
+    setCommissionValue(lotSizeValue * 30);
+  }, [lotSizeValue]);
 
   const handleChange = (e) => {
     const newValue = e.target.value;
-    setValue(newValue);
-  }
+    const name = e.target.name;
+    if (name === "lotSize") {
+      setLotSizeDivder(newValue);
+    } else {
+      setValue(newValue);
+    }
+  };
+
+  useEffect(() => {
+    getLocalStorageData();
+  }, []);
+
+  const getLocalStorageData = () => {
+    const history = localStorage.getItem("history");
+
+    if (history != null) {
+      const a = JSON.parse(history);
+
+      setLocalHistory(a);
+    }
+  };
 
   const handleChangeNewBalance = (e) => {
     const newValue = e.target.value;
     setNewBalance(newValue);
-  }
+  };
 
   const targetProfit = () => {
     return (
       <TableRow>
         <TableCell>Target Profit</TableCell>
-        <TableCell>{(value*0.04).toFixed(2)}</TableCell>
-        <TableCell>{(value*0.05).toFixed(2)}</TableCell>
-        <TableCell>{(value*0.06).toFixed(2)}</TableCell>
-        <TableCell>{(value*0.07).toFixed(2)}</TableCell>
+        <TableCell>{(value * 0.04).toFixed(2)}</TableCell>
+        <TableCell>{(value * 0.05).toFixed(2)}</TableCell>
+        <TableCell>{(value * 0.06).toFixed(2)}</TableCell>
+        <TableCell>{(value * 0.07).toFixed(2)}</TableCell>
       </TableRow>
-    )
-  }
+    );
+  };
 
   const lotSize = () => {
     return (
       <TableRow>
         <TableCell>Lot Size</TableCell>
-        <TableCell>{(lotSizeValue).toFixed(2)}</TableCell>
-        <TableCell>{(lotSizeValue).toFixed(2)}</TableCell>
-        <TableCell>{(lotSizeValue).toFixed(2)}</TableCell>
-        <TableCell>{(lotSizeValue).toFixed(2)}</TableCell>
+        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
+        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
+        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
+        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
       </TableRow>
-    )
-  }
+    );
+  };
 
   const commision = () => {
     return (
@@ -60,8 +96,8 @@ const Calculator = () => {
         <TableCell>{commissionValue.toFixed(2)}</TableCell>
         <TableCell>{commissionValue.toFixed(2)}</TableCell>
       </TableRow>
-    )
-  }
+    );
+  };
 
   const totalTarget = () => {
     return (
@@ -72,8 +108,8 @@ const Calculator = () => {
         <TableCell>{calculateTotal(0.06)}</TableCell>
         <TableCell>{calculateTotal(0.07)}</TableCell>
       </TableRow>
-    )
-  }
+    );
+  };
 
   const pipsTarget = () => {
     return (
@@ -84,34 +120,95 @@ const Calculator = () => {
         <TableCell>{calculateTotal(0.06, true)}</TableCell>
         <TableCell>{calculateTotal(0.07, true)}</TableCell>
       </TableRow>
-    )
-  }
+    );
+  };
 
   const calculateTotal = (percentage, isPipsTarget) => {
-    const finalValue = (percentage * value) + commissionValue;
-    return isPipsTarget ? Number((finalValue/lotSizeValue).toString().match(/^\d+(?:\.\d{0,2})?/)) : finalValue.toFixed(2);
-  }
+    const finalValue = percentage * value + commissionValue;
+    return isPipsTarget
+      ? Number(
+          (finalValue / lotSizeValue).toString().match(/^\d+(?:\.\d{0,2})?/)
+        )
+      : finalValue.toFixed(2);
+  };
+
+  const saveToLocalStorage = () => {
+    const date = new Date();
+    const item = localStorage.getItem("history");
+
+    if (item == null) {
+      localStorage.setItem("history", JSON.stringify([]));
+    }
+
+    const history = localStorage.getItem("history");
+
+    const a = JSON.parse(history);
+    let c = a;
+    const q = {
+      date: date,
+      balance: value,
+      newBalance: newBalance,
+      lotSize: lotSizeDivider,
+    };
+    c.push(q);
+    const d = JSON.stringify(c);
+    localStorage.setItem("history", d);
+    getLocalStorageData();
+  };
+
+  const convertDate = (value) => {
+    const a = new Date(value);
+    const b = `${a.getMonth()}-${a.getDate()}-${a.getFullYear()} ${a.getHours()}:${a.getMinutes()}`;
+
+    return b;
+  };
+
+  const loadData = (value) => {
+    setLotSizeDivder(value.lotSize);
+    setValue(value.balance);
+    setNewBalance(value.newBalance);
+  };
 
   return (
-    <Paper sx={{
-      minHeight: '500px',
-      margin: '10px'
-    }}>
+    <Paper
+      sx={{
+        minHeight: "500px",
+        margin: "10px",
+      }}
+    >
       <Stack direction="column" spacing={3}>
-        <Stack alignItems='center'>
-          <Typography variant='h4'>ASJ CALCULATOR</Typography>
+        <Stack alignItems="center">
+          <Typography variant="h4">ASJ CALCULATOR</Typography>
         </Stack>
-        <Stack>
-          <TextField 
+        <Stack direction="row" spacing={2}>
+          <TextField
             id="current-balance"
+            name="balance"
             type="number"
             value={value}
             onChange={handleChange}
-            label="Input Balance Here"/>
+            label="Input Balance Here"
+            fullWidth
+          />
+          <TextField
+            id="current-balance"
+            name="lotSize"
+            type="number"
+            value={lotSizeDivider}
+            onChange={handleChange}
+            label="Input Lot Size Divider "
+            fullWidth
+          />
         </Stack>
         <Stack>
+          <Button variant="contained" onClick={saveToLocalStorage}>
+            Save to local storage
+          </Button>
+        </Stack>
+
+        <Stack>
           <Stack>
-            <Typography variant='h6'>ACTUAL</Typography>
+            <Typography variant="h6">ACTUAL</Typography>
           </Stack>
           <TableContainer component={Paper}>
             <Table>
@@ -119,13 +216,14 @@ const Calculator = () => {
                 <TableRow>
                   <TableCell>New Balance</TableCell>
                   <TableCell>
-                    <TextField 
+                    <TextField
                       id="new-balance"
                       type="number"
                       value={newBalance}
                       onChange={handleChangeNewBalance}
-                      label="Input New Balance Here"/>
-                    </TableCell>
+                      label="Input New Balance Here"
+                    />
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Profit</TableCell>
@@ -133,7 +231,13 @@ const Calculator = () => {
                 </TableRow>
                 <TableRow>
                   <TableCell>Gain %</TableCell>
-                  <TableCell>{Number((((newBalance - value)/value)*100).toString().match(/^\d+(?:\.\d{0,2})?/))}</TableCell>
+                  <TableCell>
+                    {Number(
+                      (((newBalance - value) / value) * 100)
+                        .toString()
+                        .match(/^\d+(?:\.\d{0,2})?/)
+                    )}
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -141,7 +245,7 @@ const Calculator = () => {
         </Stack>
         <Stack>
           <Stack>
-            <Typography variant='h6'>IDEAL</Typography>
+            <Typography variant="h6">IDEAL</Typography>
           </Stack>
           <TableContainer component={Paper}>
             <Table>
@@ -165,9 +269,48 @@ const Calculator = () => {
           </TableContainer>
         </Stack>
       </Stack>
+      <Stack mt={2}>
+        <Stack>
+          <Typography variant="h5">History</Typography>
+        </Stack>
+        <Stack>
+          <TableContainer component={Paper} sx={{ padding: 0 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Balance</TableCell>
+                  <TableCell>New Balance</TableCell>
+                  <TableCell>Lot Size</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {localHistory.length > 0 &&
+                  localHistory.map((item, index) => (
+                    <TableRow direction="row" spacing={2} key={index}>
+                      <TableCell>{convertDate(item.date)}</TableCell>
+                      <TableCell>{item.balance}</TableCell>
+                      <TableCell>{item.newBalance}</TableCell>
+                      <TableCell>{item.lotSize}</TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => loadData(item)}
+                          size="small"
+                          variant="contained"
+                          color="secondary"
+                        >
+                          Load Data
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Stack>
+      </Stack>
     </Paper>
-    
-  )
-}
+  );
+};
 
 export default Calculator;
