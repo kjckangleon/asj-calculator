@@ -24,7 +24,7 @@ const Calculator = () => {
   const [localHistory, setLocalHistory] = useState([]);
   const [hasValues, setHasValues] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const vertical = "bottom";
+  const vertical = "top";
   const horizontal = "center";
 
   useEffect(() => {
