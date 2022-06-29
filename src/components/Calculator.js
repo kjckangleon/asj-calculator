@@ -216,7 +216,7 @@ const Calculator = () => {
         open={showAlert}
         onClose={handleClose}
         autoHideDuration={1500}
-        key={"bottom" + "center"}
+        key={vertical + horizontal}
       >
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           Success!
