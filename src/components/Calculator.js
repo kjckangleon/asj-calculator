@@ -11,6 +11,8 @@ import {
   TableRow,
   TableHead,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 const Calculator = () => {
@@ -21,6 +23,9 @@ const Calculator = () => {
   const [lotSizeDivider, setLotSizeDivder] = useState(830);
   const [localHistory, setLocalHistory] = useState([]);
   const [hasValues, setHasValues] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const vertical = "bottom";
+  const horizontal = "center";
 
   useEffect(() => {
     const finalValue = Number(
@@ -169,6 +174,7 @@ const Calculator = () => {
     localStorage.setItem("history", d);
     resetValues();
     getLocalStorageData();
+    setShowAlert(true);
   };
 
   const convertDate = (value) => {
@@ -191,6 +197,11 @@ const Calculator = () => {
     setLocalHistory(data);
     const updatedHistory = JSON.stringify(data);
     localStorage.setItem("history", updatedHistory);
+    setShowAlert(true);
+  };
+
+  const handleClose = () => {
+    setShowAlert(false);
   };
 
   return (
@@ -200,6 +211,17 @@ const Calculator = () => {
         margin: "10px",
       }}
     >
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={showAlert}
+        onClose={handleClose}
+        autoHideDuration={1500}
+        key={"bottom" + "center"}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Success!
+        </Alert>
+      </Snackbar>
       <Stack direction="column" spacing={3} m={2}>
         <Stack alignItems="center">
           <Typography variant="h4">ASJ CALCULATOR</Typography>
@@ -328,12 +350,18 @@ const Calculator = () => {
                       .sort((a, b) => new Date(b.date) - new Date(a.date))
                       .map((item, index) => (
                         <TableRow direction="row" key={index}>
-                          <TableCell colSpan={4}>{convertDate(item.date)}</TableCell>
+                          <TableCell colSpan={4}>
+                            {convertDate(item.date)}
+                          </TableCell>
                           <TableCell>{item.balance}</TableCell>
                           <TableCell>{item.newBalance}</TableCell>
                           <TableCell>{item.lotSize}</TableCell>
                           <TableCell colSpan={4}>
-                            <Stack flexWrap="wrap" direction="column" spacing={1}>
+                            <Stack
+                              flexWrap="wrap"
+                              direction="column"
+                              spacing={1}
+                            >
                               <Button
                                 onClick={() => loadData(item)}
                                 size="small"
