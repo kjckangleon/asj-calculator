@@ -67,6 +67,11 @@ const Calculator = () => {
     }
   };
 
+  const resetValues = () => {
+    setValue("");
+    setNewBalance("");
+  };
+
   const handleChangeNewBalance = (e) => {
     const newValue = e.target.value;
     setNewBalance(newValue);
@@ -162,6 +167,7 @@ const Calculator = () => {
     c.push(q);
     const d = JSON.stringify(c);
     localStorage.setItem("history", d);
+    resetValues();
     getLocalStorageData();
   };
 
@@ -176,6 +182,15 @@ const Calculator = () => {
     setLotSizeDivder(value.lotSize);
     setValue(value.balance);
     setNewBalance(value.newBalance);
+  };
+
+  const deleteData = (value, index) => {
+    let data = [...localHistory];
+    data.splice(index, 1);
+
+    setLocalHistory(data);
+    const updatedHistory = JSON.stringify(data);
+    localStorage.setItem("history", updatedHistory);
   };
 
   return (
@@ -295,40 +310,62 @@ const Calculator = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Date</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
                     <TableCell>Balance</TableCell>
                     <TableCell>New Balance</TableCell>
                     <TableCell>Lot Size</TableCell>
                     <TableCell>Action</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {localHistory.length > 0 &&
-                    localHistory.map((item, index) => (
-                      <TableRow direction="row" spacing={2} key={index}>
-                        <TableCell>{convertDate(item.date)}</TableCell>
-                        <TableCell>{item.balance}</TableCell>
-                        <TableCell>{item.newBalance}</TableCell>
-                        <TableCell>{item.lotSize}</TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() => loadData(item)}
-                            size="small"
-                            variant="contained"
-                            color="secondary"
-                            sx={{fontSize: '.5rem', padding: '2px'}}
-                          >
-                            Load Data
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    localHistory
+                      .sort((a, b) => new Date(b.date) - new Date(a.date))
+                      .map((item, index) => (
+                        <TableRow direction="row" key={index}>
+                          <TableCell colSpan={4}>{convertDate(item.date)}</TableCell>
+                          <TableCell>{item.balance}</TableCell>
+                          <TableCell>{item.newBalance}</TableCell>
+                          <TableCell>{item.lotSize}</TableCell>
+                          <TableCell colSpan={4}>
+                            <Stack flexWrap="wrap" direction="column" spacing={1}>
+                              <Button
+                                onClick={() => loadData(item)}
+                                size="small"
+                                variant="contained"
+                                color="secondary"
+                                sx={{ fontSize: ".5rem", padding: "2px" }}
+                              >
+                                Load Data
+                              </Button>
+                              <Button
+                                onClick={() => deleteData(item, index)}
+                                size="small"
+                                variant="contained"
+                                color="error"
+                                sx={{ fontSize: ".5rem", padding: "2px" }}
+                              >
+                                Delete Data
+                              </Button>
+                            </Stack>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                 </TableBody>
               </Table>
             </TableContainer>
           </Stack>
         </Stack>
-        <Stack>
-          <Typography>© Karl Kangleon</Typography>
+        <Stack direction="column">
+          <Typography variant="caption">© Karl Kangleon</Typography>
+          <Typography variant="caption">
+            Calculations by: Karl Allanic
+          </Typography>
         </Stack>
       </Stack>
     </Paper>
