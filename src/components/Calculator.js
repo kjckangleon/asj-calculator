@@ -24,6 +24,7 @@ const Calculator = () => {
   const [localHistory, setLocalHistory] = useState([]);
   const [hasValues, setHasValues] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [currency, setCurrency] = useState({});
   const vertical = "top";
   const horizontal = "center";
 
@@ -60,6 +61,7 @@ const Calculator = () => {
 
   useEffect(() => {
     getLocalStorageData();
+    getCurrency();
   }, []);
 
   const getLocalStorageData = () => {
@@ -80,6 +82,14 @@ const Calculator = () => {
   const handleChangeNewBalance = (e) => {
     const newValue = e.target.value;
     setNewBalance(newValue);
+  };
+
+  const getCurrency = () => {
+    const url =
+      "https://free.currconv.com/api/v7/convert?q=USD_PHP&compact=ultra&apiKey=a149756d4dad2a4294c9";
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => setCurrency(data));
   };
 
   const targetProfit = () => {
@@ -227,24 +237,33 @@ const Calculator = () => {
           <Typography variant="h4">ASJ CALCULATOR</Typography>
         </Stack>
         <Stack direction="row" spacing={2}>
-          <TextField
-            id="current-balance"
-            name="balance"
-            type="number"
-            value={value}
-            onChange={handleChange}
-            label="Input Balance Here"
-            fullWidth
-          />
-          <TextField
-            id="current-balance"
-            name="lotSize"
-            type="number"
-            value={lotSizeDivider}
-            onChange={handleChange}
-            label="Input Lot Size Divider "
-            fullWidth
-          />
+          <Stack>
+            <TextField
+              id="current-balance"
+              name="balance"
+              type="number"
+              value={value}
+              onChange={handleChange}
+              label="Input Balance Here"
+              fullWidth
+            />
+            <Typography variant="caption">Realtime API currency</Typography>
+            <Typography variant="caption">Profit USD to PHP</Typography>
+            <Typography variant="body1" fontWeight="bolder">
+              ₱{Object.values(currency) && Object.values(currency) * value}
+            </Typography>
+          </Stack>
+          <Stack>
+            <TextField
+              id="current-balance"
+              name="lotSize"
+              type="number"
+              value={lotSizeDivider}
+              onChange={handleChange}
+              label="Input Lot Size Divider "
+              fullWidth
+            />
+          </Stack>
         </Stack>
         <Stack direction="column">
           <Button
@@ -270,13 +289,23 @@ const Calculator = () => {
                 <TableRow>
                   <TableCell>New Balance</TableCell>
                   <TableCell>
-                    <TextField
-                      id="new-balance"
-                      type="number"
-                      value={newBalance}
-                      onChange={handleChangeNewBalance}
-                      label="Input New Balance Here"
-                    />
+                    <Stack>
+                      <TextField
+                        id="new-balance"
+                        type="number"
+                        value={newBalance}
+                        onChange={handleChangeNewBalance}
+                        label="Input New Balance Here"
+                      />
+                      <Typography variant="caption">
+                        Profit USD to PHP:
+                      </Typography>
+                      <Typography variant="caption">
+                        ₱
+                        {Object.values(currency) &&
+                          Object.values(currency) * newBalance}
+                      </Typography>
+                    </Stack>
                   </TableCell>
                 </TableRow>
                 <TableRow>
