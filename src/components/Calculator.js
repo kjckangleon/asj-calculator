@@ -250,7 +250,7 @@ const Calculator = () => {
             <Typography variant="caption">Realtime API currency</Typography>
             <Typography variant="caption">Profit USD to PHP</Typography>
             <Typography variant="body1" fontWeight="bolder">
-              ₱{Object.values(currency) && Object.values(currency) * value}
+              ₱{Object.values(currency) && (Object.values(currency) * value).toLocaleString()}
             </Typography>
           </Stack>
           <Stack>
@@ -303,7 +303,7 @@ const Calculator = () => {
                       <Typography variant="caption">
                         ₱
                         {Object.values(currency) &&
-                          Object.values(currency) * newBalance}
+                          (Object.values(currency) * newBalance).toLocaleString()}
                       </Typography>
                     </Stack>
                   </TableCell>
