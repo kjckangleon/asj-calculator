@@ -100,6 +100,9 @@ const Calculator = () => {
         <TableCell>{(value * 0.05).toFixed(2)}</TableCell>
         <TableCell>{(value * 0.06).toFixed(2)}</TableCell>
         <TableCell>{(value * 0.07).toFixed(2)}</TableCell>
+        <TableCell>{(value * 0.08).toFixed(2)}</TableCell>
+        <TableCell>{(value * 0.09).toFixed(2)}</TableCell>
+        <TableCell>{(value * 0.10).toFixed(2)}</TableCell>
       </TableRow>
     );
   };
@@ -108,6 +111,9 @@ const Calculator = () => {
     return (
       <TableRow>
         <TableCell>Lot Size</TableCell>
+        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
+        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
+        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
         <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
         <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
         <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
@@ -124,6 +130,9 @@ const Calculator = () => {
         <TableCell>{commissionValue.toFixed(2)}</TableCell>
         <TableCell>{commissionValue.toFixed(2)}</TableCell>
         <TableCell>{commissionValue.toFixed(2)}</TableCell>
+        <TableCell>{commissionValue.toFixed(2)}</TableCell>
+        <TableCell>{commissionValue.toFixed(2)}</TableCell>
+        <TableCell>{commissionValue.toFixed(2)}</TableCell>
       </TableRow>
     );
   };
@@ -136,6 +145,9 @@ const Calculator = () => {
         <TableCell>{calculateTotal(0.05)}</TableCell>
         <TableCell>{calculateTotal(0.06)}</TableCell>
         <TableCell>{calculateTotal(0.07)}</TableCell>
+        <TableCell>{calculateTotal(0.08)}</TableCell>
+        <TableCell>{calculateTotal(0.09)}</TableCell>
+        <TableCell>{calculateTotal(0.10)}</TableCell>
       </TableRow>
     );
   };
@@ -148,6 +160,9 @@ const Calculator = () => {
         <TableCell>{calculateTotal(0.05, true)}</TableCell>
         <TableCell>{calculateTotal(0.06, true)}</TableCell>
         <TableCell>{calculateTotal(0.07, true)}</TableCell>
+        <TableCell>{calculateTotal(0.08, true)}</TableCell>
+        <TableCell>{calculateTotal(0.09, true)}</TableCell>
+        <TableCell>{calculateTotal(0.10, true)}</TableCell>
       </TableRow>
     );
   };
@@ -302,7 +317,7 @@ const Calculator = () => {
                       </Typography>
                       <Typography variant="caption">
                         ₱
-                        {Object.values(currency) &&
+                        {Object.values(currency) !== 0 &&
                           (Object.values(currency) * newBalance).toLocaleString()}
                       </Typography>
                     </Stack>
@@ -339,6 +354,9 @@ const Calculator = () => {
                   <TableCell>5%</TableCell>
                   <TableCell>6%</TableCell>
                   <TableCell>7%</TableCell>
+                  <TableCell>8%</TableCell>
+                  <TableCell>9%</TableCell>
+                  <TableCell>10%</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
