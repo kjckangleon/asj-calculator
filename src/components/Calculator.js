@@ -33,7 +33,7 @@ const Calculator = () => {
   const [isCrypto, setIsCrypto] = useState(false);
   const vertical = "top";
   const horizontal = "center";
-  const percentageMaxCoutner = 10;
+  const percentageMaxCoutner = 20;
 
   useEffect(() => {
     const finalValue = Number(
@@ -250,6 +250,19 @@ const Calculator = () => {
     }
   };
 
+  const tableCellPercentage = () => {
+    const tableCell = [];
+    for (let index = 4; index <= percentageMaxCoutner; index++) {
+      tableCell.push(<TableCell key={index}>{`${index}%`}</TableCell>);
+    }
+    return (
+      <TableRow>
+        <TableCell>Details</TableCell>
+        {tableCell}
+      </TableRow>
+    );
+  };
+
   return (
     <Paper
       sx={{
@@ -385,18 +398,7 @@ const Calculator = () => {
           </Stack>
           <TableContainer component={Paper}>
             <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Details</TableCell>
-                  <TableCell>4%</TableCell>
-                  <TableCell>5%</TableCell>
-                  <TableCell>6%</TableCell>
-                  <TableCell>7%</TableCell>
-                  <TableCell>8%</TableCell>
-                  <TableCell>9%</TableCell>
-                  <TableCell>10%</TableCell>
-                </TableRow>
-              </TableHead>
+              <TableHead>{tableCellPercentage()}</TableHead>
               <TableBody>
                 {targetProfit()}
                 {lotSize()}
