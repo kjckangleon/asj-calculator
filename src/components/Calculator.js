@@ -13,7 +13,12 @@ import {
   Button,
   Snackbar,
   Alert,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
+const DEFAULT_LOTSIZE = 830;
+const DEFAULT_LOTSIZE_CRYPTO = 2130;
 
 const Calculator = () => {
   const [value, setValue] = useState("");
@@ -25,8 +30,10 @@ const Calculator = () => {
   const [hasValues, setHasValues] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [currency, setCurrency] = useState({});
+  const [isCrypto, setIsCrypto] = useState(false);
   const vertical = "top";
   const horizontal = "center";
+  const percentageMaxCoutner = 10;
 
   useEffect(() => {
     const finalValue = Number(
@@ -46,8 +53,12 @@ const Calculator = () => {
   useEffect(() => {}, [lotSizeDivider]);
 
   useEffect(() => {
-    setCommissionValue(lotSizeValue * 30);
-  }, [lotSizeValue]);
+    if (!isCrypto) {
+      setCommissionValue(lotSizeValue * 30);
+    } else {
+      setCommissionValue(lotSizeValue * 100);
+    }
+  }, [lotSizeValue, isCrypto]);
 
   const handleChange = (e) => {
     const newValue = e.target.value;
@@ -93,76 +104,76 @@ const Calculator = () => {
   };
 
   const targetProfit = () => {
+    const tableCell = [];
+    for (let index = 4; index <= percentageMaxCoutner; index++) {
+      tableCell.push(
+        <TableCell key={index}>{(value * (index / 100)).toFixed(2)}</TableCell>
+      );
+    }
     return (
       <TableRow>
         <TableCell>Target Profit</TableCell>
-        <TableCell>{(value * 0.04).toFixed(2)}</TableCell>
-        <TableCell>{(value * 0.05).toFixed(2)}</TableCell>
-        <TableCell>{(value * 0.06).toFixed(2)}</TableCell>
-        <TableCell>{(value * 0.07).toFixed(2)}</TableCell>
-        <TableCell>{(value * 0.08).toFixed(2)}</TableCell>
-        <TableCell>{(value * 0.09).toFixed(2)}</TableCell>
-        <TableCell>{(value * 0.10).toFixed(2)}</TableCell>
+        {tableCell}
       </TableRow>
     );
   };
 
   const lotSize = () => {
+    const tableCell = [];
+    for (let index = 4; index <= percentageMaxCoutner; index++) {
+      tableCell.push(
+        <TableCell key={index}>{lotSizeValue.toFixed(2)}</TableCell>
+      );
+    }
     return (
       <TableRow>
         <TableCell>Lot Size</TableCell>
-        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
-        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
-        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
-        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
-        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
-        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
-        <TableCell>{lotSizeValue.toFixed(2)}</TableCell>
+        {tableCell}
       </TableRow>
     );
   };
 
   const commision = () => {
+    const tableCell = [];
+    for (let index = 4; index <= percentageMaxCoutner; index++) {
+      tableCell.push(
+        <TableCell key={index}>{commissionValue.toFixed(2)}</TableCell>
+      );
+    }
     return (
       <TableRow>
         <TableCell>Commission</TableCell>
-        <TableCell>{commissionValue.toFixed(2)}</TableCell>
-        <TableCell>{commissionValue.toFixed(2)}</TableCell>
-        <TableCell>{commissionValue.toFixed(2)}</TableCell>
-        <TableCell>{commissionValue.toFixed(2)}</TableCell>
-        <TableCell>{commissionValue.toFixed(2)}</TableCell>
-        <TableCell>{commissionValue.toFixed(2)}</TableCell>
-        <TableCell>{commissionValue.toFixed(2)}</TableCell>
+        {tableCell}
       </TableRow>
     );
   };
 
   const totalTarget = () => {
+    const tableCell = [];
+    for (let index = 4; index <= percentageMaxCoutner; index++) {
+      tableCell.push(
+        <TableCell key={index}>{calculateTotal(index / 100)}</TableCell>
+      );
+    }
     return (
       <TableRow>
         <TableCell>Total Target</TableCell>
-        <TableCell>{calculateTotal(0.04)}</TableCell>
-        <TableCell>{calculateTotal(0.05)}</TableCell>
-        <TableCell>{calculateTotal(0.06)}</TableCell>
-        <TableCell>{calculateTotal(0.07)}</TableCell>
-        <TableCell>{calculateTotal(0.08)}</TableCell>
-        <TableCell>{calculateTotal(0.09)}</TableCell>
-        <TableCell>{calculateTotal(0.10)}</TableCell>
+        {tableCell}
       </TableRow>
     );
   };
 
   const pipsTarget = () => {
+    const tableCell = [];
+    for (let index = 4; index <= percentageMaxCoutner; index++) {
+      tableCell.push(
+        <TableCell key={index}>{calculateTotal(index / 100, true)}</TableCell>
+      );
+    }
     return (
       <TableRow>
         <TableCell>Pips Target</TableCell>
-        <TableCell>{calculateTotal(0.04, true)}</TableCell>
-        <TableCell>{calculateTotal(0.05, true)}</TableCell>
-        <TableCell>{calculateTotal(0.06, true)}</TableCell>
-        <TableCell>{calculateTotal(0.07, true)}</TableCell>
-        <TableCell>{calculateTotal(0.08, true)}</TableCell>
-        <TableCell>{calculateTotal(0.09, true)}</TableCell>
-        <TableCell>{calculateTotal(0.10, true)}</TableCell>
+        {tableCell}
       </TableRow>
     );
   };
@@ -229,6 +240,16 @@ const Calculator = () => {
     setShowAlert(false);
   };
 
+  const handleIsCrypto = (event) => {
+    if (event.target.checked) {
+      setIsCrypto(true);
+      setLotSizeDivder(DEFAULT_LOTSIZE_CRYPTO);
+    } else {
+      setIsCrypto(false);
+      setLotSizeDivder(DEFAULT_LOTSIZE);
+    }
+  };
+
   return (
     <Paper
       sx={{
@@ -252,7 +273,7 @@ const Calculator = () => {
           <Typography variant="h4">ASJ CALCULATOR</Typography>
         </Stack>
         <Stack direction="row" spacing={2}>
-          <Stack>
+          <Stack width="100%">
             <TextField
               id="current-balance"
               name="balance"
@@ -262,13 +283,28 @@ const Calculator = () => {
               label="Input Balance Here"
               fullWidth
             />
+            <Stack alignItems="flex-start" direction="row">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox value={isCrypto} onChange={handleIsCrypto} />
+                  }
+                  label="Is CRYPTO?"
+                />
+              </FormGroup>
+            </Stack>
             <Typography variant="caption">Realtime API currency</Typography>
+            <Typography variant="caption" fontWeight="bolder">
+              USD to PHP value today: {Object.values(currency)}
+            </Typography>
             <Typography variant="caption">Profit USD to PHP</Typography>
             <Typography variant="body1" fontWeight="bolder">
-              ₱{Object.values(currency) && (Object.values(currency) * value).toLocaleString()}
+              ₱
+              {Object.values(currency) &&
+                (Object.values(currency) * value).toLocaleString()}
             </Typography>
           </Stack>
-          <Stack>
+          <Stack width="100%">
             <TextField
               id="current-balance"
               name="lotSize"
@@ -318,7 +354,9 @@ const Calculator = () => {
                       <Typography variant="caption">
                         ₱
                         {Object.values(currency) !== 0 &&
-                          (Object.values(currency) * newBalance).toLocaleString()}
+                          (
+                            Object.values(currency) * newBalance
+                          ).toLocaleString()}
                       </Typography>
                     </Stack>
                   </TableCell>
